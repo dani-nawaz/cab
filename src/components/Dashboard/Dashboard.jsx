@@ -6,6 +6,7 @@ import ActiveDrivers from './ActiveDrivers'
 import SingleDriver from '../SingleDriver'
 import AllUsers from './Layout/AllUsers'
 import DriverManagement from './DriverManagement'
+import UserEdit from '../userEdit'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
@@ -53,6 +54,9 @@ export default function Dashboard() {
           </Route>
           <Route exact path='/allusers'>
             <AllUsers />
+          </Route>
+          <Route exact path='/user/:userId'>
+            <UserEdit />
           </Route>
         </Switch>
       </DashboardLayout>

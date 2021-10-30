@@ -2,10 +2,19 @@ import { Menu, Transition } from '@headlessui/react'
 import { MenuAlt2Icon } from '@heroicons/react/outline'
 import React from 'react'
 import { Fragment } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { logout } from '../../../actions/userActions'
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 export default function DashboardHeader({ setSidebarOpen, userNavigation }) {
+  const userLogin = useSelector((state) => state.userLogin)
+  const dispatch = useDispatch()
+
+  const { loading, userInfo } = userLogin
+  const logoutHandler = () => {
+    dispatch(logout())
+  }
   return (
     <div className='relative z-10 flex-shrink-0 flex h-16 bg-white shadow'>
       <button
@@ -23,11 +32,15 @@ export default function DashboardHeader({ setSidebarOpen, userNavigation }) {
             <div>
               <Menu.Button className='max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
                 <span className='sr-only'>Open user menu</span>
-                <img
-                  className='h-8 w-8 rounded-full'
-                  src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                  alt=''
-                />
+                {loading ? (
+                  <div>loading....</div>
+                ) : (
+                  <img
+                    className='h-10 w-10 rounded-full'
+                    src={`https://avatars.dicebear.com/api/initials/${userInfo.data.user_data.username}.svg`}
+                    alt='user avatar'
+                  />
+                )}
               </Menu.Button>
             </div>
             <Transition
@@ -40,21 +53,19 @@ export default function DashboardHeader({ setSidebarOpen, userNavigation }) {
               leaveTo='transform opacity-0 scale-95'
             >
               <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                {userNavigation.map((item) => (
-                  <Menu.Item key={item.name}>
-                    {({ active }) => (
-                      <a
-                        href={item.href}
-                        className={classNames(
-                          active ? 'bg-gray-100' : '',
-                          'block px-4 py-2 text-sm text-gray-700'
-                        )}
-                      >
-                        {item.name}
-                      </a>
-                    )}
-                  </Menu.Item>
-                ))}
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={classNames(
+                        active ? 'bg-gray-100' : '',
+                        'w-full px-4 py-2 text-sm text-gray-700 text-left'
+                      )}
+                      onClick={logoutHandler}
+                    >
+                      Log out
+                    </button>
+                  )}
+                </Menu.Item>
               </Menu.Items>
             </Transition>
           </Menu>

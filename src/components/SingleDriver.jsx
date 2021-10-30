@@ -1,7 +1,8 @@
 import { Fragment } from 'react'
 import { StarIcon } from '@heroicons/react/solid'
 import { Tab } from '@headlessui/react'
-
+import InfoTable from './InfoTable'
+// import Slider from './Slider'
 const product = {
   name: 'Arjun Kumaar',
   price: '$220',
@@ -103,11 +104,7 @@ export default function Example() {
           {/* Product image */}
           <div className='lg:row-end-1 lg:col-span-4'>
             <div className='aspect-w-4 aspect-h-3 rounded-lg bg-gray-100 overflow-hidden'>
-              <img
-                src={product.imageSrc}
-                alt={product.imageAlt}
-                className='object-center object-cover'
-              />
+              {/* <Slider /> */}
             </div>
           </div>
 
@@ -158,16 +155,7 @@ export default function Example() {
             </div>
 
             <div className='border-t border-gray-200 mt-10 pt-10'>
-              <h3 className='text-sm font-medium text-gray-900'>License</h3>
-              <p className='mt-4 text-sm text-gray-500'>
-                {license.summary}{' '}
-                <a
-                  href={license.href}
-                  className='font-medium text-indigo-600 hover:text-indigo-500'
-                >
-                  Read full license
-                </a>
-              </p>
+              <InfoTable />
             </div>
           </div>
 

@@ -1,21 +1,37 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { login } from '../../actions/userActions'
 import FormInput from '../FormInput'
 
 export default function Signin({ history }) {
   let form = useForm({ mode: 'onBlur' })
-  let [apiError, setApiError] = useState()
+  const [apiError, setApiError] = useState()
 
-  const onSubmit = async (data) => {
-    // let response = await signIn('credentials', { ...data, redirect: false })
-    // if (!response?.ok && response?.error === 'CredentialsSignin') {
-    //   setApiError('Invalid username or password')
-    // } else {
-    //   await history.push('/')
-    // }
+  const dispatch = useDispatch()
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { loading, error, userInfo } = userLogin
+  const onSubmit = (values) => {
+    const payload = {
+      country_code: 'IN',
+      device_type: 'dfd',
+      device_id: 'dfd',
+      ...values,
+    }
+    dispatch(login(payload))
   }
-
+  useEffect(() => {
+    if (userInfo) {
+      if (userInfo.data.user_data.user_type === '0') {
+        history.push('/')
+      } else {
+        setApiError('Sorry, you are not the admin')
+      }
+    }
+  }, [userInfo, history])
+  console.log()
   return (
     <div class='min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
       <div className='flex h-full justify-center items-center'>
@@ -29,9 +45,9 @@ export default function Signin({ history }) {
             </h3>
             <p className='mt-1 max-w-2xl text-sm text-gray-500'>
               <Link to='/signup'>
-                <a className='font-medium text-indigo-600 hover:text-indigo-500'>
+                <button className='font-medium text-indigo-600 hover:text-indigo-500'>
                   Create new Account
-                </a>
+                </button>
               </Link>
             </p>
           </div>
@@ -39,10 +55,10 @@ export default function Signin({ history }) {
           <div className='pt-6 pb-2 space-y-5'>
             <FormInput
               form={form}
-              autoComplete='email'
-              name='username'
-              label='Your Email'
-              type='email'
+              autoComplete='tel-local'
+              name='mobile'
+              label='Mobile Number'
+              type='text'
               required={true}
             />
 
@@ -56,6 +72,7 @@ export default function Signin({ history }) {
               minLength={5}
             />
 
+            {error && <p className='text-sm text-red-600'>{error}</p>}
             {apiError && <p className='text-sm text-red-600'>{apiError}</p>}
 
             <div className='pt-2'>
@@ -63,7 +80,11 @@ export default function Signin({ history }) {
                 type='submit'
                 className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
               >
-                Sign In
+                {loading ? (
+                  <div className='border-2 border-white/40 border-t-white w-5 h-5 rounded-full animate-spin' />
+                ) : (
+                  'Sign In'
+                )}
               </button>
             </div>
           </div>
